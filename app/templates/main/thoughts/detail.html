@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="h2 mb-2">{{ thought.title }}</h1>
+                        <div class="d-flex align-items-center text-muted mb-2">
+                            <i class="fas fa-user me-2"></i>
+                            <span>{{ thought.user.username }}</span>
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-calendar me-2"></i>
+                            <span>{{ thought.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                            {% if thought.updated_at != thought.created_at %}
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-edit me-2"></i>
+                                <span>Updated {{ thought.updated_at.strftime('%B %d, %Y') }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if current_user.is_authenticated and thought.user_id == current_user.id %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('main.thought_edit', thought_id=thought.id) }}">
+                                        <i class="fas fa-edit me-2"></i>Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-danger"
+                                            onclick="confirmDelete('{{ thought.id }}', '{{ thought.title }}')">
+                                        <i class="fas fa-trash me-2"></i>Delete
+                                    </button>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="copyToClipboard()">
+                                    <i class="fas fa-link me-2"></i>Copy Link
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thought Content -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <!-- Category and Tags -->
+                    {% if thought.category or thought.tags %}
+                        <div class="mb-4">
+                            {% if thought.category %}
+                                <span class="badge bg-primary me-2">
+                                    {% if thought.category == 'idea' %}💡 Idea
+                                    {% elif thought.category == 'note' %}📝 Note
+                                    {% elif thought.category == 'inspiration' %}✨ Inspiration
+                                    {% elif thought.category == 'todo' %}✅ Todo
+                                    {% elif thought.category == 'question' %}❓ Question
+                                    {% elif thought.category == 'project' %}🚀 Project
+                                    {% else %}{{ thought.category|title }}{% endif %}
+                                </span>
+                            {% endif %}
+                            {% if thought.tags %}
+                                {% for tag in thought.tags.split(',') %}
+                                    <span class="badge bg-light text-dark me-1">{{ tag.strip() }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Content -->
+                    <div class="thought-content">
+                        {{ thought.content|nl2br }}
+                    </div>
+
+                    <!-- Privacy Badge -->
+                    {% if thought.is_public %}
+                        <div class="mt-4 pt-3 border-top">
+                            <span class="badge bg-success">
+                                <i class="fas fa-globe me-1"></i>Public Thought
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('main.thoughts_list') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Thoughts
+                </a>
+                {% if current_user.is_authenticated and thought.user_id == current_user.id %}
+                    <div>
+                        <a href="{{ url_for('main.thought_edit', thought_id=thought.id) }}"
+                           class="btn btn-primary me-2">
+                            <i class="fas fa-edit me-2"></i>Edit
+                        </a>
+                        <button type="button" class="btn btn-outline-danger"
+                                onclick="confirmDelete('{{ thought.id }}', '{{ thought.title }}')">
+                            <i class="fas fa-trash me-2"></i>Delete
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Thought</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<span id="thoughtTitle"></span>"?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmDelete(thoughtId, thoughtTitle) {
+    document.getElementById('thoughtTitle').textContent = thoughtTitle;
+    document.getElementById('deleteForm').action = `/thoughts/${thoughtId}/delete`;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        // Show a temporary success message
+        const button = event.target.closest('.dropdown-item');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+        button.classList.add('text-success');
+
+        setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('text-success');
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

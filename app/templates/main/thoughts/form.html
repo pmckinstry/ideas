@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="mb-4">
+                <h1 class="h2 mb-1">
+                    <i class="fas fa-edit text-primary me-2"></i>
+                    {% if thought %}Edit Thought{% else %}New Thought{% endif %}
+                </h1>
+                <p class="text-muted mb-0">
+                    {% if thought %}Update your thought{% else %}Capture your idea{% endif %}
+                </p>
+            </div>
+
+            <!-- Form -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control form-control-lg" id="title" name="title"
+                                   value="{{ thought.title if thought else '' }}"
+                                   placeholder="Enter a title for your thought..." required>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content *</label>
+                            <textarea class="form-control" id="content" name="content" rows="8"
+                                      placeholder="Write your thought here..." required>{{ thought.content if thought else '' }}</textarea>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                You can use markdown formatting for rich text.
+                            </div>
+                        </div>
+
+                        <!-- Category and Tags Row -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="">Select a category...</option>
+                                        <option value="idea" {% if thought and thought.category == 'idea' %}selected{% endif %}>💡 Idea</option>
+                                        <option value="note" {% if thought and thought.category == 'note' %}selected{% endif %}>📝 Note</option>
+                                        <option value="inspiration" {% if thought and thought.category == 'inspiration' %}selected{% endif %}>✨ Inspiration</option>
+                                        <option value="todo" {% if thought and thought.category == 'todo' %}selected{% endif %}>✅ Todo</option>
+                                        <option value="question" {% if thought and thought.category == 'question' %}selected{% endif %}>❓ Question</option>
+                                        <option value="project" {% if thought and thought.category == 'project' %}selected{% endif %}>🚀 Project</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tags" class="form-label">Tags</label>
+                                    <input type="text" class="form-control" id="tags" name="tags"
+                                           value="{{ thought.tags if thought else '' }}"
+                                           placeholder="Enter tags separated by commas...">
+                                    <div class="form-text">
+                                        <i class="fas fa-tags me-1"></i>
+                                        Separate tags with commas (e.g., "web, design, inspiration")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy Setting -->
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_public" name="is_public"
+                                       {% if thought and thought.is_public %}checked{% endif %}>
+                                <label class="form-check-label" for="is_public">
+                                    <i class="fas fa-globe me-2"></i>Make this thought public
+                                </label>
+                                <div class="form-text">
+                                    Public thoughts can be viewed by anyone, even without an account.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('main.thoughts_list') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Cancel
+                            </a>
+                            <div>
+                                {% if thought %}
+                                    <a href="{{ url_for('main.thought_detail', thought_id=thought.id) }}"
+                                       class="btn btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-2"></i>View
+                                    </a>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    {% if thought %}Update Thought{% else %}Create Thought{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-resize textarea
+document.getElementById('content').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+
+// Initialize textarea height
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('content');
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+});
+</script>
+{% endblock %}

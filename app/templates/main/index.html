@@ -2,172 +2,265 @@
 
 {% block content %}
 <!-- Hero Section -->
-<div class="row align-items-center min-vh-75 mb-5">
-    <div class="col-lg-6">
-        <h1 class="display-4 fw-bold text-primary mb-4">
-            {% if current_user.is_authenticated %}
-                Welcome back, {{ current_user.username }}!
-            {% else %}
-                Welcome to My Web App
-            {% endif %}
-        </h1>
-        <p class="lead mb-4">
-            {% if current_user.is_authenticated %}
-                You're logged in and ready to explore the features of this modern web application.
-            {% else %}
-                A modern, responsive web application built with Flask and Bootstrap. 
-                This is your starting point for building amazing web experiences.
-            {% endif %}
-        </p>
-        <div class="d-flex gap-3">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.profile') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-user me-2"></i>My Profile
-                </a>
-                <button class="btn btn-outline-primary btn-lg" onclick="testAPI()">
-                    <i class="fas fa-play me-2"></i>Test API
-                </button>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-sign-in-alt me-2"></i>Get Started
-                </a>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">
-                    <i class="fas fa-user-plus me-2"></i>Register
-                </a>
-            {% endif %}
-        </div>
-    </div>
-    <div class="col-lg-6 text-center">
-        <div class="hero-image">
-            <i class="fas fa-rocket text-primary" style="font-size: 8rem; opacity: 0.7;"></i>
+<div class="hero-section bg-gradient-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    {% if current_user.is_authenticated %}
+                        Welcome back, {{ current_user.username }}!
+                    {% else %}
+                        Capture Your Ideas
+                    {% endif %}
+                </h1>
+                <p class="lead mb-4">
+                    {% if current_user.is_authenticated %}
+                        Ready to capture your next brilliant thought? Start organizing your ideas and share them with the world.
+                    {% else %}
+                        A beautiful place to capture, organize, and share your thoughts, ideas, and inspirations.
+                        Join our community of creative thinkers.
+                    {% endif %}
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('main.thoughts_list') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-lightbulb me-2"></i>My Thoughts
+                        </a>
+                        <a href="{{ url_for('main.thought_create') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-plus me-2"></i>New Thought
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Get Started
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-illustration">
+                    <i class="fas fa-lightbulb" style="font-size: 8rem; opacity: 0.8;"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Features Section -->
-<div class="row g-4 mb-5">
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center p-4">
-                <div class="feature-icon mb-3">
-                    <i class="fas fa-bolt text-primary" style="font-size: 2.5rem;"></i>
+<!-- Quick Actions Section -->
+{% if current_user.is_authenticated %}
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="h3 mb-4 text-center">Quick Actions</h2>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-plus-circle text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Create Thought</h5>
+                    <p class="card-text text-muted">
+                        Capture your ideas, notes, and inspirations in one place.
+                    </p>
+                    <a href="{{ url_for('main.thought_create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>New Thought
+                    </a>
                 </div>
-                <h5 class="card-title">Fast & Responsive</h5>
-                <p class="card-text text-muted">
-                    Built with modern web technologies for optimal performance and user experience.
-                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-search text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Find Ideas</h5>
+                    <p class="card-text text-muted">
+                        Search through your thoughts and discover hidden gems.
+                    </p>
+                    <a href="{{ url_for('main.thoughts_list') }}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Browse Thoughts
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-globe text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="card-title">Discover</h5>
+                    <p class="card-text text-muted">
+                        Explore public thoughts from the community for inspiration.
+                    </p>
+                    <a href="{{ url_for('main.public_thoughts') }}" class="btn btn-primary">
+                        <i class="fas fa-globe me-2"></i>Public Thoughts
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center p-4">
+</div>
+{% endif %}
+
+<!-- Features Section -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="h3 mb-4 text-center">Why Choose Ideas?</h2>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-brain text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="card-title">Capture Ideas</h5>
+                <p class="card-text text-muted">
+                    Never lose a brilliant thought again. Capture ideas instantly with our intuitive interface.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-tags text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="card-title">Organize & Tag</h5>
+                <p class="card-text text-muted">
+                    Categorize and tag your thoughts for easy discovery and organization.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-share-alt text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="card-title">Share & Inspire</h5>
+                <p class="card-text text-muted">
+                    Share your thoughts publicly to inspire others and build a community of thinkers.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-search text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+                <h5 class="card-title">Smart Search</h5>
+                <p class="card-text text-muted">
+                    Find your thoughts quickly with powerful search across titles, content, and tags.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
                 <div class="feature-icon mb-3">
                     <i class="fas fa-mobile-alt text-primary" style="font-size: 2.5rem;"></i>
                 </div>
-                <h5 class="card-title">Mobile First</h5>
+                <h5 class="card-title">Mobile Ready</h5>
                 <p class="card-text text-muted">
-                    Responsive design that works perfectly on all devices and screen sizes.
+                    Capture ideas on the go with our responsive design that works on all devices.
                 </p>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center p-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-card text-center p-4">
                 <div class="feature-icon mb-3">
-                    <i class="fas fa-code text-primary" style="font-size: 2.5rem;"></i>
+                    <i class="fas fa-lock text-primary" style="font-size: 2.5rem;"></i>
                 </div>
-                <h5 class="card-title">Clean Code</h5>
+                <h5 class="card-title">Privacy Control</h5>
                 <p class="card-text text-muted">
-                    Well-structured, maintainable code following best practices and conventions.
+                    Choose what to keep private and what to share with the world.
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- API Test Section -->
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="fas fa-cogs me-2"></i>API Testing
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="apiData" class="form-label">Test Data (JSON):</label>
-                    <textarea class="form-control" id="apiData" rows="3" placeholder='{"name": "test", "value": 123}'>{"name": "test", "value": 123}</textarea>
-                </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-success" onclick="testGetAPI()">
-                        <i class="fas fa-download me-2"></i>Test GET
-                    </button>
-                    <button class="btn btn-warning" onclick="testPostAPI()">
-                        <i class="fas fa-upload me-2"></i>Test POST
-                    </button>
-                </div>
-                <div class="mt-3">
-                    <label class="form-label">Response:</label>
-                    <pre id="apiResponse" class="bg-light p-3 rounded" style="min-height: 100px; font-size: 0.9rem;">Click a button to test the API...</pre>
+<!-- Call to Action -->
+{% if not current_user.is_authenticated %}
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="h3 mb-3">Ready to Start Capturing Your Ideas?</h2>
+                <p class="lead text-muted mb-4">
+                    Join thousands of creative thinkers who are already organizing their thoughts and inspiring others.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                    <a href="{{ url_for('main.public_thoughts') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-globe me-2"></i>Explore Public Thoughts
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
-{% block extra_js %}
-<script>
-function testAPI() {
-    fetch('/api/hello')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
-        })
-        .catch(error => {
-            document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
-        });
+{% block extra_css %}
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
 }
 
-function testGetAPI() {
-    fetch('/api/data')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
-        })
-        .catch(error => {
-            document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
-        });
+.hero-section {
+    position: relative;
+    overflow: hidden;
 }
 
-function testPostAPI() {
-    const data = document.getElementById('apiData').value;
-    let jsonData;
-    
-    try {
-        jsonData = JSON.parse(data);
-    } catch (e) {
-        document.getElementById('apiResponse').textContent = 'Error: Invalid JSON data';
-        return;
-    }
-    
-    fetch('/api/data', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
-    })
-    .catch(error => {
-        document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
-    });
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
 }
-</script>
-{% endblock %} 
+
+.hero-illustration {
+    position: relative;
+    z-index: 1;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+.min-vh-50 {
+    min-height: 50vh;
+}
+</style>
+{% endblock %}

@@ -5,6 +5,7 @@ This package contains the main Flask application with authentication
 and OAuth support.
 """
 
+import markupsafe
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -31,6 +32,14 @@ def create_app(config_name=None):
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to access this page."
     login_manager.login_message_category = "info"
+
+    # Register custom template filters
+    @app.template_filter("nl2br")
+    def nl2br_filter(text):
+        """Convert newlines to HTML line breaks"""
+        if text is None:
+            return ""
+        return markupsafe.Markup(text.replace("\n", "<br>"))
 
     # Import and register blueprints
     from app.api import api_bp
