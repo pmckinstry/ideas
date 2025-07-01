@@ -109,3 +109,128 @@ def init_default_user():
         print(f"Created default admin user: {admin_user.username}")
         return admin_user
     return None
+
+
+class Thought(db.Model):  # type: ignore[name-defined]
+    """Thought model for storing ideas and thoughts"""
+
+    __tablename__ = "thoughts"
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50))  # e.g., 'idea', 'note', 'inspiration', 'todo'
+    tags = db.Column(db.String(500))  # comma-separated tags
+    is_public = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+    # Foreign key to User
+    user_id = db.Column(db.String(36), db.ForeignKey("users.id"), nullable=False)
+    user = db.relationship("User", backref=db.backref("thoughts", lazy=True))
+
+    def __init__(
+        self, title, content, user_id, category=None, tags=None, is_public=False
+    ):
+        self.title = title
+        self.content = content
+        self.user_id = user_id
+        self.category = category
+        self.tags = tags
+        self.is_public = is_public
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            "category": self.category,
+            "tags": [tag.strip() for tag in self.tags.split(",")] if self.tags else [],
+            "is_public": self.is_public,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+            "user_id": self.user_id,
+        }
+
+    def __repr__(self):
+        return f"<Thought {self.title}>"
+
+
+# Thought helper functions
+def create_thought(title, content, user_id, category=None, tags=None, is_public=False):
+    """Create a new thought"""
+    thought = Thought(
+        title=title,
+        content=content,
+        user_id=user_id,
+        category=category,
+        tags=tags,
+        is_public=is_public,
+    )
+    db.session.add(thought)
+    db.session.commit()
+    return thought
+
+
+def get_thought_by_id(thought_id):
+    """Get thought by ID"""
+    return Thought.query.get(thought_id)
+
+
+def get_user_thoughts(user_id, page=1, per_page=10):
+    """Get thoughts for a user with pagination"""
+    query = Thought.query.filter_by(user_id=user_id).order_by(Thought.created_at.desc())
+    return query.paginate(page=page, per_page=per_page, error_out=False)
+
+
+def get_public_thoughts(page=1, per_page=10):
+    """Get public thoughts with pagination"""
+    query = Thought.query.filter_by(is_public=True).order_by(Thought.created_at.desc())
+    return query.paginate(page=page, per_page=per_page, error_out=False)
+
+
+def update_thought(
+    thought_id, title=None, content=None, category=None, tags=None, is_public=None
+):
+    """Update a thought"""
+    thought = get_thought_by_id(thought_id)
+    if thought:
+        if title is not None:
+            thought.title = title
+        if content is not None:
+            thought.content = content
+        if category is not None:
+            thought.category = category
+        if tags is not None:
+            thought.tags = tags
+        if is_public is not None:
+            thought.is_public = is_public
+        db.session.commit()
+    return thought
+
+
+def delete_thought(thought_id):
+    """Delete a thought"""
+    thought = get_thought_by_id(thought_id)
+    if thought:
+        db.session.delete(thought)
+        db.session.commit()
+        return True
+    return False
+
+
+def search_thoughts(user_id, query, page=1, per_page=10):
+    """Search thoughts by title or content with pagination"""
+    search_term = f"%{query}%"
+    query_filter = Thought.query.filter(
+        Thought.user_id == user_id,
+        db.or_(
+            Thought.title.ilike(search_term),
+            Thought.content.ilike(search_term),
+            Thought.tags.ilike(search_term),
+        ),
+    ).order_by(Thought.created_at.desc())
+
+    return query_filter.paginate(page=page, per_page=per_page, error_out=False)

@@ -11,9 +11,9 @@ const Utils = {
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        
+
         document.body.appendChild(alertDiv);
-        
+
         // Auto remove after 5 seconds
         setTimeout(() => {
             if (alertDiv.parentNode) {
@@ -65,11 +65,11 @@ const API = {
                 },
                 ...options
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             return await response.json();
         } catch (error) {
             throw error;
@@ -93,7 +93,7 @@ const API = {
             if (data && method === 'POST') {
                 options.body = JSON.stringify(data);
             }
-            
+
             const response = await this.request('/api/data', options);
             return response;
         } catch (error) {
@@ -105,18 +105,18 @@ const API = {
 // Page initialization
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Web app initialized');
-    
+
     // Add smooth scrolling to all links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const href = this.getAttribute('href');
-            
+
             // Skip empty or invalid href attributes
             if (!href || href === '#' || href === '#!') {
                 return;
             }
-            
+
             const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({
@@ -175,6 +175,33 @@ window.addEventListener('error', function(e) {
     Utils.showNotification('An error occurred. Please try again.', 'danger');
 });
 
+// Delete confirmation functions
+const DeleteConfirm = {
+    // Show delete confirmation modal
+    showModal: function(thoughtId, thoughtTitle) {
+        const modal = document.getElementById('deleteModal');
+        const titleSpan = document.getElementById('thoughtTitle');
+        const form = document.getElementById('deleteForm');
+
+        if (modal && titleSpan && form) {
+            titleSpan.textContent = thoughtTitle;
+            form.action = `/thoughts/${thoughtId}/delete`;
+            new bootstrap.Modal(modal).show();
+        } else {
+            console.error('Delete modal elements not found');
+        }
+    },
+
+    // Confirm delete with custom message
+    confirm: function(thoughtId, thoughtTitle, customMessage = null) {
+        const message = customMessage || `Are you sure you want to delete "${thoughtTitle}"?`;
+        if (confirm(message)) {
+            window.location.href = `/thoughts/${thoughtId}/delete`;
+        }
+    }
+};
+
 // Export for use in other scripts
 window.Utils = Utils;
-window.API = API; 
+window.API = API;
+window.DeleteConfirm = DeleteConfirm;

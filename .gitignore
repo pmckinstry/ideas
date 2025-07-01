@@ -294,4 +294,7 @@ docker-compose.override.yml
 
 # Local development
 .local/
-local/ 
+local/
+
+# Security reports
+bandit-report.json

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="fas fa-lightbulb text-primary me-2"></i>My Thoughts
+                    </h1>
+                    <p class="text-muted mb-0">Capture and organize your ideas</p>
+                </div>
+                <a href="{{ url_for('main.thought_create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>New Thought
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form action="{{ url_for('main.thought_search') }}" method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search thoughts..."
+                           value="{{ request.args.get('q', '') }}">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('main.public_thoughts') }}" class="btn btn-outline-primary">
+                <i class="fas fa-globe me-2"></i>Public Thoughts
+            </a>
+        </div>
+    </div>
+
+    <!-- Thoughts List -->
+    {% if thoughts %}
+        <div class="row">
+            {% for thought in thoughts %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-1">
+                                <a href="{{ url_for('main.thought_detail', thought_id=thought.id) }}"
+                                   class="text-decoration-none text-dark">
+                                    {{ thought.title }}
+                                </a>
+                            </h5>
+                            {% if thought.is_public %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-globe me-1"></i>Public
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <p class="card-text text-muted mb-3">
+                            {{ thought.content[:150] }}{% if thought.content|length > 150 %}...{% endif %}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="small text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ thought.created_at.strftime('%b %d, %Y') }}
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('main.thought_detail', thought_id=thought.id) }}"
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('main.thought_edit', thought_id=thought.id) }}"
+                                   class="btn btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger"
+                                        onclick="DeleteConfirm.showModal('{{ thought.id }}', '{{ thought.title }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {% if thought.category or thought.tags %}
+                        <div class="mt-3">
+                            {% if thought.category %}
+                                <span class="badge bg-primary me-1">{{ thought.category }}</span>
+                            {% endif %}
+                            {% if thought.tags %}
+                                {% for tag in thought.tags.split(',') %}
+                                    <span class="badge bg-light text-dark me-1">{{ tag.strip() }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="Thoughts pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if pagination.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.thoughts_list', page=pagination.prev_num) }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for page_num in pagination.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                            {% if page_num %}
+                                {% if page_num != pagination.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('main.thoughts_list', page=page_num) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if pagination.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.thoughts_list', page=pagination.next_num) }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <div class="text-center text-muted small mt-2">
+                    Showing {{ pagination.items|length }} of {{ pagination.total }} thoughts
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-lightbulb text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                    <h3 class="mt-3 text-muted">No thoughts yet</h3>
+                    <p class="text-muted mb-4">Start capturing your ideas and thoughts</p>
+                    <a href="{{ url_for('main.thought_create') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Your First Thought
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Thought</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<span id="thoughtTitle"></span>"?</p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Delete confirmation handled by shared JavaScript -->
+{% endblock %}
