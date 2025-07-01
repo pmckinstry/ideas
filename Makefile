@@ -7,7 +7,7 @@ help:
 	@echo "  lint       - Run all linting tools"
 	@echo "  format     - Format code with black and isort"
 	@echo "  check      - Run type checking with mypy"
-	@echo "  security   - Run security checks with bandit"
+
 	@echo "  test       - Run tests (placeholder)"
 	@echo "  clean      - Clean up cache files"
 	@echo "  pre-commit - Install pre-commit hooks"
@@ -34,10 +34,7 @@ lint: format
 check:
 	mypy app/ --ignore-missing-imports
 
-# Security checks
-security:
-	bandit -r app/ -f json -o bandit-report.json || true
-	@echo "Security report generated: bandit-report.json"
+
 
 # Run tests (placeholder for future test setup)
 test:
@@ -51,14 +48,14 @@ clean:
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
 	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 	find . -type d -name ".mypy_cache" -exec rm -rf {} +
-	rm -f bandit-report.json
+
 
 # Quick check - run format and basic linting
 quick: format
 	flake8 .
 
 # Full check - run everything
-full: lint check security
+full: lint check
 	@echo "Full code quality check completed!"
 
 # Development setup

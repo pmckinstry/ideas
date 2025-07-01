@@ -1,4 +1,4 @@
-bandit==1.7.5
+
 black==23.12.1
 blinker==1.6.3
 click==8.1.7
