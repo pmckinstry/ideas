@@ -147,7 +147,7 @@ class Thought(db.Model):  # type: ignore[name-defined]
             "title": self.title,
             "content": self.content,
             "category": self.category,
-            "tags": self.tags.split(",") if self.tags else [],
+            "tags": [tag.strip() for tag in self.tags.split(",")] if self.tags else [],
             "is_public": self.is_public,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
