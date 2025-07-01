@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary mb-3">About This Web App</h1>
+            <p class="lead text-muted">
+                A modern, scalable web application built with Python and Flask
+            </p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-primary">
+                            <i class="fas fa-server me-2"></i>Backend
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Flask web framework
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Python 3.x
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>RESTful API endpoints
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Environment configuration
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-primary">
+                            <i class="fas fa-palette me-2"></i>Frontend
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Bootstrap 5
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Responsive design
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Font Awesome icons
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>Modern JavaScript
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-rocket me-2"></i>Getting Started
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Installation:</h6>
+                        <pre class="bg-light p-3 rounded"><code>pip install -r requirements.txt</code></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Running the app:</h6>
+                        <pre class="bg-light p-3 rounded"><code>python app.py</code></pre>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-muted mb-0">
+                        The application will be available at <code>http://localhost:5000</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-code me-2"></i>Project Structure
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Core Files:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>app.py</code> - Main Flask application</li>
+                            <li><code>requirements.txt</code> - Python dependencies</li>
+                            <li><code>.env</code> - Environment variables (create this)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Directories:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>templates/</code> - HTML templates</li>
+                            <li><code>static/</code> - CSS, JS, images</li>
+                            <li><code>docs/</code> - Documentation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

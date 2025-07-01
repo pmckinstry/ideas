@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary mb-3">User Profile</h1>
+            <p class="lead text-muted">
+                Welcome back, {{ current_user.username }}!
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Profile Information -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-circle me-2"></i>Profile Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Username:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                {{ current_user.username }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Email:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                {{ current_user.email }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>User ID:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <code class="small">{{ current_user.id }}</code>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Member Since:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="text-muted">
+                                    {% if current_user.created_at %}
+                                        {{ current_user.created_at.strftime('%B %d, %Y') }}
+                                    {% else %}
+                                        Recently
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% if current_user.oauth_provider %}
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <strong>Login Method:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="badge bg-info">
+                                    <i class="fab fa-{{ current_user.oauth_provider }} me-1"></i>
+                                    {{ current_user.oauth_provider.title() }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            {% if not current_user.oauth_provider %}
+                            <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-key me-2"></i>Change Password
+                            </a>
+                            {% endif %}
+                            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-2"></i>Go to Dashboard
+                            </a>
+                            <a href="{{ url_for('main.about') }}" class="btn btn-outline-info">
+                                <i class="fas fa-info-circle me-2"></i>About the App
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Security -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-shield-alt me-2"></i>Account Security
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Security Status</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Password is set
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Email is verified
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                Two-factor authentication not enabled
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Recommendations</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                Enable two-factor authentication
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                Use a strong, unique password
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                Keep your email address updated
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
