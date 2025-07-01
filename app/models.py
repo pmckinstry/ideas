@@ -179,20 +179,16 @@ def get_thought_by_id(thought_id):
     return Thought.query.get(thought_id)
 
 
-def get_user_thoughts(user_id, limit=None):
-    """Get all thoughts for a user"""
+def get_user_thoughts(user_id, page=1, per_page=10):
+    """Get thoughts for a user with pagination"""
     query = Thought.query.filter_by(user_id=user_id).order_by(Thought.created_at.desc())
-    if limit:
-        query = query.limit(limit)
-    return query.all()
+    return query.paginate(page=page, per_page=per_page, error_out=False)
 
 
-def get_public_thoughts(limit=None):
-    """Get all public thoughts"""
+def get_public_thoughts(page=1, per_page=10):
+    """Get public thoughts with pagination"""
     query = Thought.query.filter_by(is_public=True).order_by(Thought.created_at.desc())
-    if limit:
-        query = query.limit(limit)
-    return query.all()
+    return query.paginate(page=page, per_page=per_page, error_out=False)
 
 
 def update_thought(
@@ -225,8 +221,8 @@ def delete_thought(thought_id):
     return False
 
 
-def search_thoughts(user_id, query, limit=None):
-    """Search thoughts by title or content"""
+def search_thoughts(user_id, query, page=1, per_page=10):
+    """Search thoughts by title or content with pagination"""
     search_term = f"%{query}%"
     query_filter = Thought.query.filter(
         Thought.user_id == user_id,
@@ -237,7 +233,4 @@ def search_thoughts(user_id, query, limit=None):
         ),
     ).order_by(Thought.created_at.desc())
 
-    if limit:
-        query_filter = query_filter.limit(limit)
-
-    return query_filter.all()
+    return query_filter.paginate(page=page, per_page=per_page, error_out=False)

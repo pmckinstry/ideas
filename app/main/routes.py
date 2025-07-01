@@ -33,16 +33,14 @@ def thoughts_list():
     page = request.args.get("page", 1, type=int)
     per_page = 10
 
-    # Get thoughts with pagination
-    thoughts = get_user_thoughts(current_user.id)
-    total = len(thoughts)
-    thoughts = thoughts[(page - 1) * per_page : page * per_page]
+    # Get thoughts with database-level pagination
+    pagination = get_user_thoughts(current_user.id, page=page, per_page=per_page)
 
     return render_template(
         "main/thoughts/list.html",
-        thoughts=thoughts,
+        thoughts=pagination.items,
+        pagination=pagination,
         page=page,
-        total=total,
         per_page=per_page,
         title="My Thoughts",
     )
@@ -54,15 +52,14 @@ def public_thoughts():
     page = request.args.get("page", 1, type=int)
     per_page = 10
 
-    thoughts = get_public_thoughts()
-    total = len(thoughts)
-    thoughts = thoughts[(page - 1) * per_page : page * per_page]
+    # Get public thoughts with database-level pagination
+    pagination = get_public_thoughts(page=page, per_page=per_page)
 
     return render_template(
         "main/thoughts/public.html",
-        thoughts=thoughts,
+        thoughts=pagination.items,
+        pagination=pagination,
         page=page,
-        total=total,
         per_page=per_page,
         title="Public Thoughts",
     )
@@ -194,14 +191,21 @@ def thought_delete(thought_id):
 def thought_search():
     """Search thoughts"""
     query = request.args.get("q", "").strip()
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
     if not query:
         return redirect(url_for("main.thoughts_list"))
 
-    thoughts = search_thoughts(current_user.id, query)
+    # Search thoughts with database-level pagination
+    pagination = search_thoughts(current_user.id, query, page=page, per_page=per_page)
 
     return render_template(
         "main/thoughts/search.html",
-        thoughts=thoughts,
+        thoughts=pagination.items,
+        pagination=pagination,
         query=query,
+        page=page,
+        per_page=per_page,
         title=f"Search Results for '{query}'",
     )
