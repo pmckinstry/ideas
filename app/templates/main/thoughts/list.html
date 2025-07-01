@@ -79,7 +79,7 @@
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <button type="button" class="btn btn-outline-danger"
-                                        onclick="confirmDelete('{{ thought.id }}', '{{ thought.title }}')">
+                                        onclick="DeleteConfirm.showModal('{{ thought.id }}', '{{ thought.title }}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -191,11 +191,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-function confirmDelete(thoughtId, thoughtTitle) {
-    document.getElementById('thoughtTitle').textContent = thoughtTitle;
-    document.getElementById('deleteForm').action = `/thoughts/${thoughtId}/delete`;
-    new bootstrap.Modal(document.getElementById('deleteModal')).show();
-}
-</script>
+<!-- Delete confirmation handled by shared JavaScript -->
 {% endblock %}
