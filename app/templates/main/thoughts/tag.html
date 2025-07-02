@@ -101,7 +101,7 @@
                         <i class="fas fa-edit"></i>
                     </a>
                     <button type="button" class="btn btn-outline-danger btn-sm" title="Delete"
-                            onclick="DeleteConfirm.showModal('{{ thought.id }}', '{{ thought.title }}')">
+                            onclick="DeleteConfirm.showModal({{ thought.id|tojson }}, {{ thought.title|tojson }})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
