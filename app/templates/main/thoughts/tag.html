@@ -77,12 +77,13 @@
                                 <span class="badge bg-light text-dark">{{ thought.category }}</span>
                             {% endif %}
                             {% if thought.tags %}
-                                {% for tag_item in thought.tags.split(',')[:2] %}
+                                {% set tags_list = thought.tags.split(',') %}
+                                {% for tag_item in tags_list[:2] %}
                                     <a href="{{ url_for('main.thoughts_by_tag', tag=tag_item.strip()) }}"
                                        class="badge bg-light text-dark text-decoration-none">{{ tag_item.strip() }}</a>
                                 {% endfor %}
-                                {% if thought.tags.split(',')|length > 2 %}
-                                    <span class="badge bg-light text-dark">+{{ thought.tags.split(',')|length - 2 }}</span>
+                                {% if tags_list|length > 2 %}
+                                    <span class="badge bg-light text-dark">+{{ tags_list|length - 2 }}</span>
                                 {% endif %}
                             {% endif %}
                         </div>
