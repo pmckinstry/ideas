@@ -6,7 +6,9 @@ from app.models import (
     create_thought,
     delete_thought,
     get_public_thoughts,
+    get_public_thoughts_by_tag,
     get_thought_by_id,
+    get_thoughts_by_tag,
     get_user_thoughts,
     search_thoughts,
     update_thought,
@@ -208,4 +210,45 @@ def thought_search():
         page=page,
         per_page=per_page,
         title=f"Search Results for '{query}'",
+    )
+
+
+@main_bp.route("/thoughts/tag/<tag>")
+@login_required
+def thoughts_by_tag(tag):
+    """List thoughts filtered by a specific tag for the current user"""
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
+    # Get thoughts by tag with database-level pagination
+    pagination = get_thoughts_by_tag(current_user.id, tag, page=page, per_page=per_page)
+
+    return render_template(
+        "main/thoughts/tag.html",
+        thoughts=pagination.items,
+        pagination=pagination,
+        tag=tag,
+        page=page,
+        per_page=per_page,
+        title=f"Thoughts tagged '{tag}'",
+    )
+
+
+@main_bp.route("/thoughts/public/tag/<tag>")
+def public_thoughts_by_tag(tag):
+    """List public thoughts filtered by a specific tag"""
+    page = request.args.get("page", 1, type=int)
+    per_page = 10
+
+    # Get public thoughts by tag with database-level pagination
+    pagination = get_public_thoughts_by_tag(tag, page=page, per_page=per_page)
+
+    return render_template(
+        "main/thoughts/public_tag.html",
+        thoughts=pagination.items,
+        pagination=pagination,
+        tag=tag,
+        page=page,
+        per_page=per_page,
+        title=f"Public thoughts tagged '{tag}'",
     )
