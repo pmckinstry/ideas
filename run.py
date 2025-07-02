@@ -29,4 +29,4 @@ def internal_error(error):
 
 if __name__ == "__main__":
     debug = os.environ.get("FLASK_DEBUG", "True").lower() == "true"
-    app.run(debug=debug, host="0.0.0.0", port=5001)  # nosec B104
+    app.run(debug=debug, host="0.0.0.0", port=5000)  # nosec B104
