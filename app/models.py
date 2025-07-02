@@ -236,21 +236,19 @@ def search_thoughts(user_id, query, page=1, per_page=10):
     return query_filter.paginate(page=page, per_page=per_page, error_out=False)
 
 
-def get_thoughts_by_tag(user_id, tag, page=1, per_page=10):
+def get_thoughts_by_tag(user_id, tag_name, page=1, per_page=10):
     """Get thoughts filtered by a specific tag for a user"""
-    tag_pattern = f"%{tag}%"
-    query_filter = Thought.query.filter(
-        Thought.user_id == user_id, Thought.tags.ilike(tag_pattern)
+    query_filter = Thought.query.join(thought_tags).join(Tag).filter(
+        Thought.user_id == user_id, Tag.name == tag_name
     ).order_by(Thought.created_at.desc())
 
     return query_filter.paginate(page=page, per_page=per_page, error_out=False)
 
 
-def get_public_thoughts_by_tag(tag, page=1, per_page=10):
+def get_public_thoughts_by_tag(tag_name, page=1, per_page=10):
     """Get public thoughts filtered by a specific tag"""
-    tag_pattern = f"%{tag}%"
-    query_filter = Thought.query.filter(
-        Thought.is_public.is_(True), Thought.tags.ilike(tag_pattern)
+    query_filter = Thought.query.join(thought_tags).join(Tag).filter(
+        Thought.is_public.is_(True), Tag.name == tag_name
     ).order_by(Thought.created_at.desc())
 
     return query_filter.paginate(page=page, per_page=per_page, error_out=False)
