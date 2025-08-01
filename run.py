@@ -18,13 +18,17 @@ app = create_app()
 @app.errorhandler(404)
 def not_found(error):
     """404 error handler"""
-    return app.send_static_file("404.html"), 404
+    from flask import render_template
+
+    return render_template("404.html"), 404
 
 
 @app.errorhandler(500)
 def internal_error(error):
     """500 error handler"""
-    return app.send_static_file("500.html"), 500
+    from flask import render_template
+
+    return render_template("500.html"), 500
 
 
 if __name__ == "__main__":

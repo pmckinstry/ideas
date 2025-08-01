@@ -137,6 +137,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Handle delete thought buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-thought-btn')) {
+            e.preventDefault();
+            const button = e.target.closest('.delete-thought-btn');
+            const thoughtId = button.getAttribute('data-thought-id');
+            const thoughtTitle = button.getAttribute('data-thought-title');
+
+            if (thoughtId && thoughtTitle) {
+                DeleteConfirm.showModal(thoughtId, thoughtTitle);
+            }
+        }
+    });
+
     // Initialize tooltips if Bootstrap is available
     if (typeof bootstrap !== 'undefined') {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

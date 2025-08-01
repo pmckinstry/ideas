@@ -32,6 +32,32 @@
     </div>
 </div>
 
-
+<!-- Inspirational Quote Section -->
+{% if quote %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 bg-light">
+                <div class="card-body text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-left text-primary" style="font-size: 2rem; opacity: 0.3;"></i>
+                    </div>
+                    <blockquote class="blockquote mb-3">
+                        <p class="lead mb-0">{{ quote.text }}</p>
+                    </blockquote>
+                    <footer class="blockquote-footer">
+                        <cite title="Source Title">{{ quote.author }}</cite>
+                    </footer>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-2"></i>New Quote
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}

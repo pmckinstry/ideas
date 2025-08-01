@@ -94,8 +94,8 @@
                        class="btn btn-outline-secondary btn-sm" title="Edit">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <button type="button" class="btn btn-outline-danger btn-sm" title="Delete"
-                            onclick="DeleteConfirm.showModal({{ thought.id|tojson }}, {{ thought.title|tojson }})">
+                    <button type="button" class="btn btn-outline-danger btn-sm delete-thought-btn" title="Delete"
+                            data-thought-id="{{ thought.id }}" data-thought-title="{{ thought.title|e }}">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
